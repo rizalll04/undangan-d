@@ -204,6 +204,10 @@ export const invitationData: InvitationData = {
       note: "Konfirmasi pengiriman kado via WhatsApp mempelai"
     }
   },
-  audioUrl: "https://cdn.pixabay.com/download/audio/2022/05/16/audio_c976f92c19.mp3?filename=romantic-wedding-piano-112191.mp3"
+  // ── GANTI AUDIO ────────────────────────────────────────────────────────────
+  // Opsi 1 — File lokal: letakkan file .mp3 di folder /public, lalu isi "/nama-file.mp3"
+  // Opsi 2 — URL eksternal: tempel link mp3 yang bisa diakses publik
+  // ────────────────────────────────────────────────────────────────────────────
+  audioUrl: "/audio/wedding-song.mp3",
 };
 
