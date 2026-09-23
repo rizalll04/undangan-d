@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import CoverScreen from "@/components/CoverScreen";
 import AudioPlayer from "@/components/AudioPlayer";
 import FloatingNav from "@/components/FloatingNav";
+import FloatingParticles from "@/components/FloatingParticles";
 import HeroSection from "@/components/HeroSection";
 import CoupleSection from "@/components/CoupleSection";
 import EventsSection from "@/components/EventsSection";
@@ -43,6 +44,9 @@ function WeddingInvitationContent() {
         audioUrl={invitationData.audioUrl}
         autoPlayTrigger={isOpen}
       />
+
+      {/* Floating Gold Particles Animation */}
+      {isOpen && <FloatingParticles />}
 
       {/* Floating Bottom Navigation Dock */}
       {isOpen && <FloatingNav />}

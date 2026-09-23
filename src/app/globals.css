@@ -5,6 +5,22 @@
   --font-serif: var(--font-playfair), Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
+@keyframes floatParticle {
+  0% {
+    transform: translateY(105vh) translateX(0px);
+  }
+  50% {
+    transform: translateY(50vh) translateX(20px);
+  }
+  100% {
+    transform: translateY(-10vh) translateX(-20px);
+  }
+}
+
+.animate-float-particle {
+  animation-name: floatParticle;
+}
+
 :root {
   --background: #0c0a09;
   --foreground: #f5f5f4;
