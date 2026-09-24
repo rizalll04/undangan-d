@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import confetti from "canvas-confetti";
+import { QrCode } from "lucide-react";
+import Image from "next/image";
+
 import { MailOpen, Heart, Sparkles, Calendar, MapPin } from "lucide-react";
 import { invitationData } from "@/data/invitationData";
 
@@ -24,6 +27,11 @@ export default function CoverScreen({ guestName, isOpen, onOpen }: CoverScreenPr
       setShouldRender(true);
     }
   }, [isOpen]);
+
+  const [showQrModal, setShowQrModal] = useState(false);
+  const encodedName = encodeURIComponent(guestName || "Tamu Undangan");
+  const checkInUrl = typeof window !== "undefined" ? `${window.location.origin}/check-in?name=${encodedName}` : `/check-in?name=${encodedName}`;
+  const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(checkInUrl)}`;
 
   const handleOpenInvitation = () => {
     try {
@@ -103,6 +111,16 @@ export default function CoverScreen({ guestName, isOpen, onOpen }: CoverScreenPr
           <p className="text-[11px] text-stone-400 italic">
             *Mohon maaf apabila ada kesalahan penulisan nama/gelar
           </p>
+          <div className="mt-4 pt-4 border-t border-stone-800 flex justify-center">
+            <button
+              onClick={() => setShowQrModal(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-400/40 text-amber-300 hover:bg-amber-500/20 text-xs font-medium transition-colors"
+            >
+              <QrCode className="h-4 w-4 text-amber-400" />
+              <span>Lihat QR Code Tiket Masuk</span>
+            </button>
+          </div>
+
         </div>
       </div>
 
@@ -117,6 +135,53 @@ export default function CoverScreen({ guestName, isOpen, onOpen }: CoverScreenPr
           <Heart className="h-4 w-4 text-rose-200 fill-rose-200 animate-pulse" />
         </button>
       </div>
+      {/* QR Code Modal for Guest */}
+      {showQrModal && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-sm rounded-3xl border border-amber-400/30 bg-stone-900 p-6 text-center shadow-2xl">
+            <div className="absolute top-3 right-3">
+              <button
+                onClick={() => setShowQrModal(false)}
+                className="h-8 w-8 rounded-full bg-stone-800 text-stone-400 hover:text-white flex items-center justify-center font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="flex items-center justify-center gap-2 mb-2 text-amber-400">
+              <QrCode className="h-5 w-5" />
+              <h3 className="font-serif font-semibold text-lg">Tiket QR Code Resepsi</h3>
+            </div>
+            <p className="text-xs text-stone-400 mb-4">
+              Tunjukkan QR Code ini kepada panitia saat tiba di lokasi resepsi untuk pencatatan buku tamu digital.
+            </p>
+
+            <div className="bg-white p-4 rounded-2xl inline-block shadow-inner mx-auto mb-4">
+              <Image
+                src={qrApiUrl}
+                alt="QR Code Tamu"
+                width={200}
+                height={200}
+                unoptimized
+                className="mx-auto"
+              />
+            </div>
+
+            <div className="bg-stone-800/80 rounded-xl p-3 border border-stone-700 mb-4">
+              <p className="text-xs text-stone-400">Nama Tamu:</p>
+              <p className="font-semibold text-amber-200 text-base capitalize">{guestName || "Tamu Undangan"}</p>
+            </div>
+
+            <button
+              onClick={() => setShowQrModal(false)}
+              className="w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold tracking-wider uppercase shadow-md transition-colors"
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
