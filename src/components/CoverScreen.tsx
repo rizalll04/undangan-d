@@ -29,9 +29,25 @@ export default function CoverScreen({ guestName, isOpen, onOpen }: CoverScreenPr
   }, [isOpen]);
 
   const [showQrModal, setShowQrModal] = useState(false);
+  // Generate deterministik token unik berbasis nama tamu (cth: TKN-BUDISANTOSO-A3F1)
+  const generateToken = (name: string) => {
+    const cleanName = (name || "Tamu Undangan").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = (hash << 5) - hash + name.charCodeAt(i);
+      hash |= 0;
+    }
+    const hexHash = Math.abs(hash).toString(16).substring(0, 4).toUpperCase();
+    return `TKN-${cleanName.substring(0, 10)}-${hexHash}`;
+  };
+
+  const guestToken = generateToken(guestName);
   const encodedName = encodeURIComponent(guestName || "Tamu Undangan");
-  const checkInUrl = typeof window !== "undefined" ? `${window.location.origin}/check-in?name=${encodedName}` : `/check-in?name=${encodedName}`;
+  const checkInUrl = typeof window !== "undefined"
+    ? `${window.location.origin}/check-in?name=${encodedName}&token=${guestToken}`
+    : `/check-in?name=${encodedName}&token=${guestToken}`;
   const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(checkInUrl)}`;
+
 
   const handleOpenInvitation = () => {
     try {
@@ -167,8 +183,13 @@ export default function CoverScreen({ guestName, isOpen, onOpen }: CoverScreenPr
               />
             </div>
 
-            <div className="bg-stone-800/80 rounded-xl p-3 border border-stone-700 mb-4">
-              <p className="text-xs text-stone-400">Nama Tamu:</p>
+            <div className="bg-stone-800/80 rounded-xl p-3 border border-stone-700 mb-4 text-left">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-[11px] text-stone-400">Nama Tamu:</span>
+                <span className="text-[10px] font-mono bg-amber-950/80 text-amber-300 px-2 py-0.5 rounded border border-amber-400/30">
+                  {guestToken}
+                </span>
+              </div>
               <p className="font-semibold text-amber-200 text-base capitalize">{guestName || "Tamu Undangan"}</p>
             </div>
 
